@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Space Grotesk', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-arabic: 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: #020617;
+        background-image:
+            radial-gradient(circle at 12% -8%, rgb(8 145 178 / 0.18), transparent 38%),
+            radial-gradient(circle at 88% 4%, rgb(37 99 235 / 0.14), transparent 34%);
+        background-attachment: fixed;
+    }
+
+    ::selection {
+        background-color: rgb(34 211 238 / 0.3);
+        color: #fff;
+    }
+
+    textarea:placeholder-shown {
+        direction: rtl;
+        text-align: right;
+    }
+}

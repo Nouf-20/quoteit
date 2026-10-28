@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>QuoteIt — Entity Relationship Diagram</title>
+<style>
+  @page { size: A4 landscape; margin: 8mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #1e293b;
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  h1 { font-size: 23pt; color: #0e7490; margin: 0 0 4px; }
+  .subtitle { color: #475569; font-size: 10.5pt; margin-bottom: 4px; }
+  .meta { color: #64748b; font-size: 9pt; margin-bottom: 14px; }
+  .canvas { position: relative; width: 1000px; height: 500px; margin: 0 auto; }
+  .entity {
+    position: absolute;
+    width: 280px;
+    background: #fff;
+    border: 1.5px solid #94a3b8;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.10);
+  }
+  .entity-header {
+    background: #0e7490;
+    color: #fff;
+    padding: 9px 12px;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .entity-header span { font-size: 9px; font-weight: 500; opacity: 0.85; letter-spacing: 0.2px; }
+  .entity-body { padding: 5px 0 6px; }
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2.5px 12px;
+    font-size: 10.5px;
+    line-height: 1.35;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .field:last-child { border-bottom: none; }
+  .field .name { flex: 1; color: #0f172a; font-family: Consolas, monospace; font-size: 10px; }
+  .field .type { color: #64748b; font-size: 8.5px; white-space: nowrap; }
+  .key {
+    font-size: 7.5px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 3px;
+    letter-spacing: 0.4px;
+    min-width: 20px;
+    text-align: center;
+  }
+  .pk { background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; }
+  .fk { background: #cffafe; color: #155e75; border: 1px solid #22d3ee; }
+  .unique-note {
+    margin: 4px 10px 0;
+    padding: 4px 6px;
+    background: #f0fdfa;
+    border: 1px dashed #14b8a6;
+    border-radius: 4px;
+    font-size: 8.5px;
+    color: #0f766e;
+  }
+  svg { position: absolute; inset: 0; width: 1000px; height: 500px; pointer-events: none; }
+  .rel-label { font-size: 12px; font-weight: 700; fill: #0e7490; font-family: "Segoe UI", Arial, sans-serif; }
+  .rel-name { font-size: 9px; fill: #64748b; font-family: "Segoe UI", Arial, sans-serif; }
+  .legend {
+    width: 1000px;
+    margin: 8px auto 0;
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 9.5px;
+    color: #334155;
+  }
+  .legend .box { display: flex; align-items: center; gap: 6px; }
+  .legend .swatch { width: 30px; height: 0; border-top: 2px solid #0e7490; }
+  .note {
+    width: 1000px;
+    margin: 10px auto 0;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 9pt;
+    color: #475569;
+  }
+  .note strong { color: #0e7490; }
+</style>
+</head>
+<body>
+
+<h1>QuoteIt — Entity Relationship Diagram (ERD)</h1>
+<div class="subtitle">Final database schema for the QuoteIt platform, including the new Like feature.</div>
+<div class="meta">Al-Qimmah Bootcamp · Programming &amp; Development Track · 2026 &nbsp;|&nbsp; Database: SQLite &nbsp;|&nbsp; ORM: Laravel Eloquent</div>
+
+<div class="canvas">
+  <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6">
+        <circle cx="5" cy="5" r="3" fill="#0e7490"/>
+      </marker>
+    </defs>
+
+    <!-- users (1) -> quotes (N) -->
+    <path d="M295 270 H327 V122 H360" fill="none" stroke="#0e7490" stroke-width="2" marker-start="url(#dot)" marker-end="url(#dot)"/>
+    <text x="306" y="259" class="rel-label">1</text>
+    <text x="338" y="112" class="rel-label">N</text>
+    <text x="312" y="205" class="rel-name" transform="rotate(-90 312 205)">publishes</text>
+
+    <!-- quotes (1) -> quote_likes (N) -->
+    <path d="M500 204 V250 H845 V290" fill="none" stroke="#0e7490" stroke-width="2" marker-start="url(#dot)" marker-end="url(#dot)"/>
+    <text x="508" y="220" class="rel-label">1</text>
+    <text x="852" y="282" class="rel-label">N</text>
+    <text x="655" y="243" class="rel-name">receives likes</text>
+
+    <!-- users (1) -> quote_likes (N) -->
+    <path d="M155 386 V492 H845 V478" fill="none" stroke="#0e7490" stroke-width="2" marker-start="url(#dot)" marker-end="url(#dot)"/>
+    <text x="163" y="402" class="rel-label">1</text>
+    <text x="852" y="470" class="rel-label">N</text>
+    <text x="430" y="486" class="rel-name">gives likes</text>
+  </svg>
+
+  <!-- USERS -->
+  <div class="entity" style="left:15px; top:150px;">
+    <div class="entity-header">users <span>registered accounts</span></div>
+    <div class="entity-body">
+      <div class="field"><span class="key pk">PK</span><span class="name">id</span><span class="type">BIGINT</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">name</span><span class="type">VARCHAR(255)</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">email</span><span class="type">VARCHAR(255) UQ</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">email_verified_at</span><span class="type">TIMESTAMP</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">password</span><span class="type">VARCHAR(255)</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">remember_token</span><span class="type">VARCHAR(100)</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">created_at</span><span class="type">TIMESTAMP</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">updated_at</span><span class="type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <!-- QUOTES -->
+  <div class="entity" style="left:360px; top:40px;">
+    <div class="entity-header">quotes <span>published quotes</span></div>
+    <div class="entity-body">
+      <div class="field"><span class="key pk">PK</span><span class="name">id</span><span class="type">BIGINT</span></div>
+      <div class="field"><span class="key fk">FK</span><span class="name">user_id</span><span class="type">BIGINT → users.id</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">content</span><span class="type">VARCHAR(155)</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">created_at</span><span class="type">TIMESTAMP</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">updated_at</span><span class="type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <!-- QUOTE_LIKES -->
+  <div class="entity" style="left:705px; top:290px;">
+    <div class="entity-header">quote_likes <span>new feature</span></div>
+    <div class="entity-body">
+      <div class="field"><span class="key pk">PK</span><span class="name">id</span><span class="type">BIGINT</span></div>
+      <div class="field"><span class="key fk">FK</span><span class="name">quote_id</span><span class="type">BIGINT → quotes.id</span></div>
+      <div class="field"><span class="key fk">FK</span><span class="name">user_id</span><span class="type">BIGINT → users.id</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">created_at</span><span class="type">TIMESTAMP</span></div>
+      <div class="field"><span class="key">&nbsp;</span><span class="name">updated_at</span><span class="type">TIMESTAMP</span></div>
+      <div class="unique-note">UNIQUE (quote_id, user_id) — one like per user per quote</div>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="box"><span class="key pk">PK</span> Primary key</div>
+  <div class="box"><span class="key fk">FK</span> Foreign key</div>
+  <div class="box"><span class="swatch"></span> Relationship (1 : N)</div>
+  <div class="box">UQ = unique constraint</div>
+</div>
+
+<div class="note">
+  <strong>Relationships:</strong>
+  one <em>user</em> publishes many <em>quotes</em> (1:N) &nbsp;·&nbsp;
+  one <em>quote</em> receives many <em>likes</em> (1:N) &nbsp;·&nbsp;
+  one <em>user</em> gives many <em>likes</em> (1:N). &nbsp;
+  <em>Users</em> and <em>quotes</em> therefore form a many-to-many relationship through <em>quote_likes</em>.
+  Foreign keys use cascade delete, so deleting a user or a quote removes the related likes automatically.
+  <br>
+  <strong>Framework support tables:</strong> Laravel also creates <em>sessions</em>, <em>cache</em>, <em>cache_locks</em>, <em>jobs</em>, and related infrastructure tables; they are omitted here because they do not represent project domain entities.
+</div>
+
+</body>
+</html>

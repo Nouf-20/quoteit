@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>QuoteIt — Software Requirements Specification</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 16mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #1e293b;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  h1, h2, h3 { color: #0e7490; line-height: 1.25; }
+  h1 { font-size: 22pt; margin: 0 0 6px; }
+  h2 { font-size: 15pt; margin: 26px 0 10px; padding-bottom: 5px; border-bottom: 2px solid #cffafe; page-break-after: avoid; }
+  h3 { font-size: 12pt; margin: 18px 0 6px; page-break-after: avoid; }
+  p { margin: 0 0 9px; }
+  ul, ol { margin: 0 0 10px 20px; padding: 0; }
+  li { margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: 9.5pt; page-break-inside: auto; }
+  th { background: #0e7490; color: #fff; text-align: left; padding: 7px 8px; font-weight: 600; }
+  td { border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  tr { page-break-inside: avoid; }
+  .cover { min-height: 247mm; display: flex; flex-direction: column; justify-content: center; text-align: center; page-break-after: always; }
+  .cover .badge { display: inline-block; align-self: center; background: #ecfeff; color: #0e7490; border: 1px solid #67e8f9; padding: 5px 16px; border-radius: 999px; font-size: 9pt; letter-spacing: 2px; font-weight: 700; margin-bottom: 18px; }
+  .cover h1 { font-size: 34pt; letter-spacing: -0.5px; }
+  .cover .subtitle { font-size: 13pt; color: #475569; margin-bottom: 26px; }
+  .cover .meta { margin: 24px auto 0; width: 78%; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; padding: 14px 0; font-size: 10pt; color: #334155; }
+  .cover .meta div { margin: 4px 0; }
+  .cover .note { margin-top: 30px; font-size: 9.5pt; color: #64748b; }
+  .toc { page-break-after: always; }
+  .toc h2 { margin-top: 0; }
+  .toc ol { list-style: none; margin-left: 0; }
+  .toc ol ol { margin-left: 22px; list-style: none; }
+  .toc li { margin: 6px 0; }
+  .toc a { color: #0f172a; text-decoration: none; }
+  .small { font-size: 9pt; color: #475569; }
+  .req { background: #f0fdfa; border-left: 4px solid #14b8a6; padding: 8px 12px; margin: 8px 0 14px; font-size: 9.5pt; }
+  .flow { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin: 8px 0 14px; }
+  .flow strong { color: #0e7490; }
+  code { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 3px; padding: 0 4px; font-family: Consolas, monospace; font-size: 9pt; }
+  .avoid-break { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <span class="badge">AL-QIMMAH BOOTCAMP · 2026</span>
+  <h1>QuoteIt</h1>
+  <div class="subtitle">Software Requirements Specification (SRS)</div>
+  <p style="font-size:11pt;color:#334155;max-width:150mm;margin:0 auto;">
+    An interactive web platform for publishing, sharing, and managing quotes — with a
+    database-backed quote feed and a like/unlike feature.
+  </p>
+  <div class="meta">
+    <div><strong>Document version:</strong> 2.0 (final, updated)</div>
+    <div><strong>Project type:</strong> Individual project</div>
+    <div><strong>Track:</strong> Programming &amp; Development</div>
+    <div><strong>Date:</strong> 27 October 2026</div>
+    <div><strong>Implementation:</strong> Laravel 13 · PHP 8.5 · Blade · Tailwind CSS · SQLite</div>
+  </div>
+  <div class="note">This document updates the provided SRS to reflect the final implemented system, including the new Like feature.</div>
+</section>
+
+<nav class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#s1">1. Introduction</a>
+      <ol>
+        <li><a href="#s1-1">1.1 Purpose</a></li>
+        <li><a href="#s1-2">1.2 Scope</a></li>
+        <li><a href="#s1-3">1.3 Definitions</a></li>
+        <li><a href="#s1-4">1.4 References</a></li>
+      </ol>
+    </li>
+    <li><a href="#s2">2. Overall Description</a>
+      <ol>
+        <li><a href="#s2-1">2.1 Product Perspective</a></li>
+        <li><a href="#s2-2">2.2 User Classes</a></li>
+        <li><a href="#s2-3">2.3 Operating Environment</a></li>
+        <li><a href="#s2-4">2.4 Constraints and Assumptions</a></li>
+      </ol>
+    </li>
+    <li><a href="#s3">3. System Features</a>
+      <ol>
+        <li><a href="#s3-1">3.1 View Quotes</a></li>
+        <li><a href="#s3-2">3.2 Create Account</a></li>
+        <li><a href="#s3-3">3.3 Log In</a></li>
+        <li><a href="#s3-4">3.4 Log Out</a></li>
+        <li><a href="#s3-5">3.5 Share a Quote</a></li>
+        <li><a href="#s3-6">3.6 Edit Own Quote</a></li>
+        <li><a href="#s3-7">3.7 Delete Own Quote</a></li>
+        <li><a href="#s3-8">3.8 Like / Unlike a Quote (New Feature)</a></li>
+      </ol>
+    </li>
+    <li><a href="#s4">4. External Interface Requirements</a></li>
+    <li><a href="#s5">5. Non-Functional Requirements</a></li>
+    <li><a href="#s6">6. Data Requirements</a></li>
+    <li><a href="#s7">7. Requirements Traceability</a></li>
+    <li><a href="#s8">8. Changes from the Original SRS</a></li>
+    <li><a href="#s9">9. Future Enhancements</a></li>
+    <li><a href="#s10">10. Appendix: Setup and Demo Account</a></li>
+  </ol>
+</nav>
+
+<h2 id="s1">1. Introduction</h2>
+
+<h3 id="s1-1">1.1 Purpose</h3>
+<p>
+  This Software Requirements Specification (SRS) defines the functional and non-functional
+  requirements of <strong>QuoteIt</strong>, a web platform for publishing and managing quotes.
+  It is the reference document for the final version of the project and describes what the
+  system does, how users interact with it, and the constraints it must satisfy.
+</p>
+
+<h3 id="s1-2">1.2 Scope</h3>
+<p>
+  QuoteIt allows visitors to browse all published quotes without an account. Registered users
+  can create an account, log in, publish quotes, edit or delete their own quotes, and log out.
+  The final version adds one new feature: <strong>like/unlike with persistent like counts</strong>.
+  All data is stored in a relational database; no quote data is hardcoded in the views.
+</p>
+<p>The system deliberately excludes features that are not required by the project brief, such as
+  private messaging, quote categories, password reset, and moderation tools.</p>
+
+<h3 id="s1-3">1.3 Definitions</h3>
+<table>
+  <tr><th style="width:26%">Term</th><th>Definition</th></tr>
+  <tr><td>Guest</td><td>An unauthenticated visitor who can browse quotes.</td></tr>
+  <tr><td>Registered User</td><td>An authenticated account holder who can publish and manage their own quotes.</td></tr>
+  <tr><td>Quote</td><td>A short text of 3–155 characters published by a registered user.</td></tr>
+  <tr><td>Owner</td><td>The user who created a quote; only the owner may edit or delete it.</td></tr>
+  <tr><td>Like</td><td>A persistent association between one user and one quote. A user may like a quote at most once.</td></tr>
+  <tr><td>Like count</td><td>The number of distinct users who currently like a quote.</td></tr>
+  <tr><td>CSRF</td><td>Cross-Site Request Forgery protection token included in every state-changing form.</td></tr>
+</table>
+
+<h3 id="s1-4">1.4 References</h3>
+<ul>
+  <li>Al-Qimmah Bootcamp — Final Project Guide, 2026.</li>
+  <li>Provided QuoteIt frontend starter code.</li>
+  <li>Laravel 13 documentation: routing, validation, Eloquent, authentication, Blade.</li>
+</ul>
+
+<h2 id="s2">2. Overall Description</h2>
+
+<h3 id="s2-1">2.1 Product Perspective</h3>
+<p>
+  QuoteIt is a standalone Laravel web application following the MVC pattern. Blade templates
+  provide the presentation layer, controllers handle requests and validation, Eloquent models
+  map the domain entities, and migrations/seeders create and populate the database. The public
+  quote feed is the entry point of the application.
+</p>
+
+<h3 id="s2-2">2.2 User Classes</h3>
+<table>
+  <tr><th style="width:22%">User class</th><th>Capabilities</th></tr>
+  <tr>
+    <td>Guest</td>
+    <td>Browse all quotes (text, author name, publication date, like count). Open sign-up and login pages.</td>
+  </tr>
+  <tr>
+    <td>Registered User</td>
+    <td>Everything a guest can do, plus publish quotes, edit/delete own quotes, like/unlike any quote, and log out.</td>
+  </tr>
+</table>
+
+<h3 id="s2-3">2.3 Operating Environment</h3>
+<table>
+  <tr><th style="width:30%">Component</th><th>Technology</th></tr>
+  <tr><td>Server language</td><td>PHP 8.5</td></tr>
+  <tr><td>Framework</td><td>Laravel 13</td></tr>
+  <tr><td>Database</td><td>SQLite (development); schema is portable to MySQL</td></tr>
+  <tr><td>View layer</td><td>Blade templates with template inheritance and components</td></tr>
+  <tr><td>Styling</td><td>Tailwind CSS compiled with Vite</td></tr>
+  <tr><td>Client</td><td>Any modern web browser; responsive on mobile and desktop</td></tr>
+</table>
+
+<h3 id="s2-4">2.4 Constraints and Assumptions</h3>
+<ul>
+  <li>All views must use Blade template inheritance (<code>@extends</code>, <code>@yield</code>) and Blade components.</li>
+  <li>Every form field must display a short hint describing the allowed input.</li>
+  <li>Passwords must be stored hashed; plain-text passwords must never be persisted.</li>
+  <li>Only the owner of a quote may edit or delete it.</li>
+  <li>The quotes page must load within 3 seconds.</li>
+  <li>Users are assumed to have a valid email address and a modern browser.</li>
+</ul>
+
+<h2 id="s3">3. System Features</h2>
+
+<div class="req"><strong>FR-01 — View quotes.</strong> The system shall display every published quote to every visitor, including guests, showing the quote text, the author's name, and the publication date.</div>
+<h3 id="s3-1">3.1 View Quotes</h3>
+<p><strong>Actors:</strong> Guest, Registered User. <strong>Preconditions:</strong> none.</p>
+<div class="flow">
+  <strong>Main flow:</strong> The user opens the home page → the system retrieves all quotes with their authors and like counts from the database → the system renders the quotes list ordered from newest to oldest → each card shows the quote text, author name, date, and like count.
+</div>
+<p><strong>Postconditions:</strong> The quotes list is visible; guests see login/sign-up links; registered users additionally see the share form and like buttons.</p>
+<p><strong>Acceptance criteria:</strong> A guest visiting <code>/</code> sees the quotes with author and date; the data comes from the database, not from hardcoded view data.</p>
+
+<div class="req"><strong>FR-02 — Create account.</strong> The system shall allow a visitor to register with a name of 2–50 characters, a valid unique email address, and a password of at least 8 characters.</div>
+<h3 id="s3-2">3.2 Create Account</h3>
+<p><strong>Actor:</strong> Guest. <strong>Preconditions:</strong> the visitor is not authenticated.</p>
+<div class="flow">
+  <strong>Main flow:</strong> The visitor opens the sign-up page → enters full name, email, password, and password confirmation → submits the form → the system validates all fields → the password is hashed → the user record is created → the user is logged in and redirected to the home page.
+</div>
+<p><strong>Alternative flows:</strong></p>
+<ul>
+  <li>Name shorter than 2 or longer than 50 characters → validation error displayed next to the field.</li>
+  <li>Email is invalid or already registered → validation error displayed next to the field.</li>
+  <li>Password shorter than 8 characters or confirmation does not match → validation error displayed next to the field.</li>
+</ul>
+<p><strong>Postconditions:</strong> A new user exists with a hashed password, and an authenticated session is active.</p>
+<p><strong>Acceptance criteria:</strong> Valid data creates an account and logs the user in; invalid data is rejected with a visible message and the form is not submitted to the database.</p>
+
+<div class="req"><strong>FR-03 — Log in.</strong> The system shall authenticate a registered user using their email address and password.</div>
+<h3 id="s3-3">3.3 Log In</h3>
+<p><strong>Actor:</strong> Guest (registered user). <strong>Preconditions:</strong> an account exists.</p>
+<div class="flow">
+  <strong>Main flow:</strong> The user opens the login page → enters email and password → the system verifies the credentials against the stored hash → the session is regenerated → the user is redirected to the home page.
+</div>
+<p><strong>Alternative flow:</strong> Credentials do not match → a general error is shown and the email is preserved in the form.</p>
+<p><strong>Acceptance criteria:</strong> Correct credentials authenticate the user; incorrect credentials do not create a session.</p>
+
+<div class="req"><strong>FR-04 — Log out.</strong> The system shall allow an authenticated user to end their session.</div>
+<h3 id="s3-4">3.4 Log Out</h3>
+<p><strong>Actor:</strong> Registered User. <strong>Preconditions:</strong> the user is authenticated.</p>
+<div class="flow">
+  <strong>Main flow:</strong> The user presses “Log out” in the header → the system invalidates the session and regenerates the CSRF token → the user is redirected to the home page as a guest.
+</div>
+<p><strong>Acceptance criteria:</strong> After logout, protected actions are no longer available and the header shows login/sign-up links.</p>
+
+<div class="req"><strong>FR-05 — Share a quote.</strong> The system shall allow an authenticated user to publish a quote of 3–155 characters.</div>
+<h3 id="s3-5">3.5 Share a Quote</h3>
+<p><strong>Actor:</strong> Registered User. <strong>Preconditions:</strong> the user is authenticated.</p>
+<div class="flow">
+  <strong>Main flow:</strong> The user writes the quote in the share form → submits → the system validates the length → the quote is stored with the authenticated user's ID and the current timestamp → the page reloads and the new quote appears at the top of the list.
+</div>
+<p><strong>Alternative flows:</strong> Fewer than 3 or more than 155 characters → a validation error is displayed and nothing is stored.</p>
+<p><strong>Postconditions:</strong> The quote is persisted in the database and visible to all visitors.</p>
+
+<div class="req"><strong>FR-06 — Edit own quote.</strong> The system shall allow a user to edit only the quotes they created.</div>
+<h3 id="s3-6">3.6 Edit Own Quote</h3>
+<p><strong>Actor:</strong> Registered User (owner). <strong>Preconditions:</strong> the user is authenticated and owns the quote.</p>
+<div class="flow">
+  <strong>Main flow:</strong> The owner selects “Edit” on their quote → the edit form opens with the current text → the owner changes the text and submits → the system verifies ownership and validates the length → the quote is updated.
+</div>
+<p><strong>Alternative flows:</strong> The user is not the owner → the system responds with HTTP 403 and does not reveal the edit form. Invalid length → validation error.</p>
+<p><strong>Acceptance criteria:</strong> Owners can update their quotes; other users cannot access the edit route or persist changes.</p>
+
+<div class="req"><strong>FR-07 — Delete own quote.</strong> The system shall allow a user to delete only the quotes they created.</div>
+<h3 id="s3-7">3.7 Delete Own Quote</h3>
+<p><strong>Actor:</strong> Registered User (owner). <strong>Preconditions:</strong> the user is authenticated and owns the quote.</p>
+<div class="flow">
+  <strong>Main flow:</strong> The owner selects “Delete” and confirms → the system verifies ownership → the quote and its likes are deleted → the list refreshes without the quote.
+</div>
+<p><strong>Alternative flow:</strong> A non-owner attempts deletion → HTTP 403; the quote remains unchanged.</p>
+
+<div class="req"><strong>FR-08 — Like / unlike a quote (new feature).</strong> The system shall allow an authenticated user to like or unlike any quote and shall display the stored like count on every quote.</div>
+<h3 id="s3-8">3.8 Like / Unlike a Quote (New Feature)</h3>
+<p><strong>Actor:</strong> Registered User. <strong>Preconditions:</strong> the user is authenticated and the quote exists.</p>
+<div class="flow">
+  <strong>Main flow:</strong> The user presses the heart button on a quote → the system toggles the like for that user → the association is stored in <code>quote_likes</code> → the page reloads and the heart state and count update.
+</div>
+<p><strong>Alternative flow:</strong> A guest sees the like count but not an interactive like button; guests are invited to log in.</p>
+<p><strong>Business rules:</strong></p>
+<ul>
+  <li>A user can like a given quote at most once; pressing again removes the like.</li>
+  <li>Like counts are computed from the database and are visible to guests and registered users.</li>
+  <li>Deleting a quote also deletes its likes (cascade).</li>
+</ul>
+<p><strong>Acceptance criteria:</strong> Liking increments the count, unliking decrements it, the count persists after a reload, and the toggle only works for authenticated users.</p>
+
+<h2 id="s4">4. External Interface Requirements</h2>
+
+<h3>4.1 User Interfaces</h3>
+<table>
+  <tr><th style="width:20%">Page</th><th style="width:20%">Route</th><th>Purpose</th></tr>
+  <tr><td>Quotes list</td><td><code>GET /</code></td><td>Public feed of quotes, share form for authenticated users, like buttons, owner controls.</td></tr>
+  <tr><td>Sign up</td><td><code>GET /signup</code></td><td>Account creation form with field hints and inline errors.</td></tr>
+  <tr><td>Log in</td><td><code>GET /login</code></td><td>Email/password login form with field hints and errors.</td></tr>
+  <tr><td>Edit quote</td><td><code>GET /quotes/{id}/edit</code></td><td>Owner-only edit form.</td></tr>
+</table>
+<p>The interface is responsive, uses a dark cybersecurity visual theme for quote cards, and uses Blade components for inputs, text areas, hints, error messages, alerts, and branding.</p>
+
+<h3>4.2 Form Fields and Hints</h3>
+<table>
+  <tr><th style="width:20%">Form</th><th style="width:20%">Field</th><th>Rule</th><th style="width:32%">Hint shown</th></tr>
+  <tr><td>Sign up</td><td>Full name</td><td>Required, 2–50 characters</td><td>“2-50 characters.”</td></tr>
+  <tr><td>Sign up</td><td>Email</td><td>Required, valid, unique</td><td>“Use a valid email address.”</td></tr>
+  <tr><td>Sign up</td><td>Password</td><td>Required, minimum 8 characters</td><td>“At least 8 characters.”</td></tr>
+  <tr><td>Sign up</td><td>Confirm password</td><td>Must match the password</td><td>“Repeat the password exactly.”</td></tr>
+  <tr><td>Log in</td><td>Email</td><td>Required, valid email</td><td>“Use the email you signed up with.”</td></tr>
+  <tr><td>Log in</td><td>Password</td><td>Required</td><td>“At least 8 characters.”</td></tr>
+  <tr><td>Log in</td><td>Remember</td><td>Optional checkbox</td><td>“Keep me signed in on this device.”</td></tr>
+  <tr><td>Share / Edit</td><td>Quote text</td><td>Required, 3–155 characters</td><td>“3-155 characters.”</td></tr>
+</table>
+
+<h3>4.3 Software Interfaces</h3>
+<ul>
+  <li><strong>Database:</strong> SQLite via Laravel's PDO driver; Eloquent models <code>User</code> and <code>Quote</code>.</li>
+  <li><strong>Session storage:</strong> database-backed sessions.</li>
+  <li><strong>Asset pipeline:</strong> Vite builds the Tailwind CSS and JavaScript assets.</li>
+</ul>
+
+<h2 id="s5">5. Non-Functional Requirements</h2>
+
+<table>
+  <tr><th style="width:22%">Category</th><th>Requirement</th><th style="width:30%">Implementation</th></tr>
+  <tr>
+    <td>Security — password storage</td>
+    <td>Passwords must be hashed, never stored as plain text.</td>
+    <td>Laravel <code>hashed</code> cast on <code>User::$password</code>; bcrypt hashing.</td>
+  </tr>
+  <tr>
+    <td>Security — authorization</td>
+    <td>Only the owner may edit or delete a quote; others may only read it.</td>
+    <td>Authenticated routes plus server-side ownership check returning HTTP 403.</td>
+  </tr>
+  <tr>
+    <td>Security — request forgery</td>
+    <td>State-changing forms must be protected.</td>
+    <td>CSRF tokens on every POST/PUT/DELETE form; session regenerated on login and logout.</td>
+  </tr>
+  <tr>
+    <td>Usability — hints</td>
+    <td>Every form field must show a short hint about allowed input.</td>
+    <td>Reusable <code>&lt;x-form-hint&gt;</code> component on every field.</td>
+  </tr>
+  <tr>
+    <td>Usability — first quote</td>
+    <td>A new user must be able to publish a first quote in under one minute.</td>
+    <td>Share form is at the top of the home page after login; a single field and one submit button.</td>
+  </tr>
+  <tr>
+    <td>Performance</td>
+    <td>The quotes page must load within 3 seconds.</td>
+    <td>Single indexed query with eager loading and aggregate like count; compiled assets; measured locally at well under 1 second.</td>
+  </tr>
+  <tr>
+    <td>Reliability / integrity</td>
+    <td>Data must remain consistent.</td>
+    <td>Foreign keys with cascade delete; unique constraint on <code>(quote_id, user_id)</code>.</td>
+  </tr>
+  <tr>
+    <td>Maintainability</td>
+    <td>The code must follow the framework conventions.</td>
+    <td>MVC separation, migrations, seeders, reusable Blade components, automated tests.</td>
+  </tr>
+  <tr>
+    <td>Portability</td>
+    <td>The application should run on a standard PHP/Laravel environment.</td>
+    <td>Standard Laravel structure; environment-driven database configuration.</td>
+  </tr>
+</table>
+
+<h2 id="s6">6. Data Requirements</h2>
+
+<h3>6.1 Entities</h3>
+<h4>users</h4>
+<table>
+  <tr><th style="width:26%">Column</th><th style="width:22%">Type</th><th>Constraints</th></tr>
+  <tr><td>id</td><td>BIGINT UNSIGNED</td><td>Primary key, auto-increment</td></tr>
+  <tr><td>name</td><td>VARCHAR(255)</td><td>Required; validated to 2–50 characters</td></tr>
+  <tr><td>email</td><td>VARCHAR(255)</td><td>Required, unique</td></tr>
+  <tr><td>email_verified_at</td><td>TIMESTAMP</td><td>Nullable</td></tr>
+  <tr><td>password</td><td>VARCHAR(255)</td><td>Required, hashed</td></tr>
+  <tr><td>remember_token</td><td>VARCHAR(100)</td><td>Nullable</td></tr>
+  <tr><td>created_at / updated_at</td><td>TIMESTAMP</td><td>Nullable</td></tr>
+</table>
+
+<h4>quotes</h4>
+<table>
+  <tr><th style="width:26%">Column</th><th style="width:22%">Type</th><th>Constraints</th></tr>
+  <tr><td>id</td><td>BIGINT UNSIGNED</td><td>Primary key, auto-increment</td></tr>
+  <tr><td>user_id</td><td>BIGINT UNSIGNED</td><td>Foreign key → <code>users.id</code>, required, cascade delete</td></tr>
+  <tr><td>content</td><td>VARCHAR(155)</td><td>Required; validated to 3–155 characters</td></tr>
+  <tr><td>created_at / updated_at</td><td>TIMESTAMP</td><td>Nullable</td></tr>
+</table>
+
+<h4>quote_likes</h4>
+<table>
+  <tr><th style="width:26%">Column</th><th style="width:22%">Type</th><th>Constraints</th></tr>
+  <tr><td>id</td><td>BIGINT UNSIGNED</td><td>Primary key, auto-increment</td></tr>
+  <tr><td>quote_id</td><td>BIGINT UNSIGNED</td><td>Foreign key → <code>quotes.id</code>, required, cascade delete</td></tr>
+  <tr><td>user_id</td><td>BIGINT UNSIGNED</td><td>Foreign key → <code>users.id</code>, required, cascade delete</td></tr>
+  <tr><td>created_at / updated_at</td><td>TIMESTAMP</td><td>Nullable</td></tr>
+  <tr><td colspan="3"><strong>Unique constraint:</strong> (<code>quote_id</code>, <code>user_id</code>) — one like per user per quote.</td></tr>
+</table>
+
+<h3>6.2 Relationships</h3>
+<ul>
+  <li>A <strong>user</strong> has many <strong>quotes</strong>; each quote belongs to exactly one user.</li>
+  <li>A <strong>user</strong> has many <strong>likes</strong>; each like belongs to one user.</li>
+  <li>A <strong>quote</strong> has many <strong>likes</strong>; each like belongs to one quote.</li>
+  <li>Users and quotes form a many-to-many relationship through <code>quote_likes</code>.</li>
+</ul>
+<p class="small">The complete entity relationship diagram is provided separately as <strong>QuoteIt_ERD.pdf</strong>.</p>
+
+<h2 id="s7">7. Requirements Traceability</h2>
+<table>
+  <tr><th style="width:8%">Req.</th><th style="width:24%">Requirement</th><th style="width:38%">Implementation</th><th>Verification</th></tr>
+  <tr><td>FR-01</td><td>Show all quotes with text, author, date</td><td><code>QuoteController@index</code>; <code>welcome.blade.php</code> quote cards</td><td>Guest HTTP check; database-backed list verified</td></tr>
+  <tr><td>FR-02</td><td>Sign up with name 2–50, email, password ≥ 8</td><td><code>AuthController@signup</code> validation; sign-up Blade form</td><td>Invalid and valid input tested</td></tr>
+  <tr><td>FR-03</td><td>Log in with email and password</td><td><code>AuthController@login</code>; Laravel session guard</td><td>Correct and incorrect credentials tested</td></tr>
+  <tr><td>FR-04</td><td>Log out</td><td><code>AuthController@logout</code>; header form</td><td>Session invalidated tested</td></tr>
+  <tr><td>FR-05</td><td>Share quote 3–155 characters</td><td><code>QuoteController@store</code> validation and persistence</td><td>Boundary validation tested</td></tr>
+  <tr><td>FR-06</td><td>Edit only own quotes</td><td><code>QuoteController@edit/update</code> with ownership check</td><td>Owner success, non-owner 403 tested</td></tr>
+  <tr><td>FR-07</td><td>Delete only own quotes</td><td><code>QuoteController@destroy</code> with ownership check</td><td>Owner success, non-owner 403 tested</td></tr>
+  <tr><td>FR-08</td><td>Like / unlike with stored count</td><td><code>LikeController@toggle</code>; <code>quote_likes</code> table</td><td>Like, unlike, persistence tested</td></tr>
+  <tr><td>NFR-1</td><td>Passwords hashed</td><td><code>User</code> model <code>hashed</code> cast</td><td><code>Hash::check</code> verified</td></tr>
+  <tr><td>NFR-2</td><td>Owner-only modification</td><td>Server-side 403 ownership checks</td><td>Cross-user attempts tested</td></tr>
+  <tr><td>NFR-3</td><td>Hints on every field</td><td><code>x-form-hint</code> on all fields</td><td>Page inspection</td></tr>
+  <tr><td>NFR-4</td><td>Quotes page under 3 seconds</td><td>Eager loading, aggregate count, compiled assets</td><td>Local load timing</td></tr>
+  <tr><td>NFR-5</td><td>Real database integration</td><td>Migrations, seeders, Eloquent models</td><td>Seeded data rendered from SQLite</td></tr>
+</table>
+
+<h2 id="s8">8. Changes from the Original SRS</h2>
+<ul>
+  <li><strong>New feature — Likes:</strong> added the <code>quote_likes</code> table, toggle action, and like counts. This satisfies the mandatory “at least one new feature” requirement.</li>
+  <li><strong>Database integration:</strong> quotes, users, and likes are persisted in SQLite instead of static view data.</li>
+  <li><strong>Authentication:</strong> completed sign-up, login, logout, validation, and session handling.</li>
+  <li><strong>Authorization:</strong> added owner-only edit/delete with server-side enforcement.</li>
+  <li><strong>User interface:</strong> restored the quote feed with Blade components, responsive cards, hints, error messages, and success alerts.</li>
+  <li><strong>Seed data:</strong> added a demo account and eight cybersecurity quotes with varied authors and dates.</li>
+  <li><strong>Testing:</strong> enabled database refresh for feature tests and verified the full flow over HTTP.</li>
+</ul>
+
+<h2 id="s9">9. Future Enhancements</h2>
+<ul>
+  <li>Bookmarks/favorites for saving quotes.</li>
+  <li>Search and filter by author, date, or keyword.</li>
+  <li>Quote categories and tags.</li>
+  <li>Profile pages with a user's quotes and liked quotes.</li>
+  <li>Pagination or infinite scrolling for large quote collections.</li>
+  <li>Password reset and email verification.</li>
+</ul>
+
+<h2 id="s10">10. Appendix: Setup and Demo Account</h2>
+<h3>10.1 Demo Account</h3>
+<table>
+  <tr><th style="width:30%">Field</th><th>Value</th></tr>
+  <tr><td>Email</td><td><code>demo@quoteit.com</code></td></tr>
+  <tr><td>Password</td><td><code>password123</code></td></tr>
+</table>
+
+<h3>10.2 Run the Project</h3>
+<ol>
+  <li>Install PHP 8.3+ and Composer.</li>
+  <li>Run <code>composer install</code>.</li>
+  <li>Copy <code>.env.example</code> to <code>.env</code> and run <code>php artisan key:generate</code>.</li>
+  <li>Ensure <code>database/database.sqlite</code> exists, then run <code>php artisan migrate --seed</code>.</li>
+  <li>Run <code>npm install &amp;&amp; npm run build</code> (or <code>npm run dev</code>).</li>
+  <li>Run <code>php artisan serve</code> and open <code>http://127.0.0.1:8000</code>.</li>
+</ol>
+
+<p class="small" style="margin-top:26px;border-top:1px solid #e2e8f0;padding-top:10px;">
+  QuoteIt — Software Requirements Specification, version 2.0 · Al-Qimmah Bootcamp 2026.
+</p>
+
+</body>
+</html>
